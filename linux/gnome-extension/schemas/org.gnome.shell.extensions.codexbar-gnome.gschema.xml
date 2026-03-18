@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.codexbar-gnome" path="/org/gnome/shell/extensions/codexbar-gnome/">
+    <key name="backend-path" type="s">
+      <default>''</default>
+      <summary>Path to the CodexBar-Gnome backend executable.</summary>
+      <description>Leave empty to use ~/.local/bin/codexbar-gnome-backend.</description>
+    </key>
+    <key name="default-provider" type="s">
+      <default>'codex'</default>
+      <summary>Provider shown by default in the top bar.</summary>
+      <description>Supported values are codex and claude.</description>
+    </key>
+    <key name="refresh-interval" type="u">
+      <default>120</default>
+      <summary>Seconds between refreshes.</summary>
+      <description>The extension polls the backend on this interval.</description>
+    </key>
+    <key name="show-percentage" type="b">
+      <default>true</default>
+      <summary>Whether to show the remaining percentage in the top bar.</summary>
+      <description>When disabled, only the icon remains visible in the panel.</description>
+    </key>
+    <key name="keep-last-good-value" type="b">
+      <default>true</default>
+      <summary>Keep the last successful value when refresh fails.</summary>
+      <description>If disabled, the panel clears its data whenever the backend errors.</description>
+    </key>
+  </schema>
+</schemalist>

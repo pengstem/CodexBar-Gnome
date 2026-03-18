@@ -1,0 +1,8 @@
+{
+  "uuid": "codexbar-gnome",
+  "name": "CodexBar-Gnome",
+  "description": "GNOME top bar extension for Codex and Claude usage on Linux.",
+  "version": 1,
+  "shell-version": ["49", "48", "47"],
+  "settings-schema": "org.gnome.shell.extensions.codexbar-gnome"
+}

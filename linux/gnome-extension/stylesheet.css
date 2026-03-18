@@ -1,0 +1,248 @@
+.codexbar-panel-box {
+    spacing: 8px;
+    padding: 0 4px;
+}
+
+.codexbar-panel-badge {
+    min-width: 26px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.codexbar-panel-meters {
+    spacing: 3px;
+    margin-right: 1px;
+}
+
+.codexbar-panel-meter {
+    border-radius: 999px;
+    min-width: 18px;
+}
+
+.codexbar-panel-meter-primary {
+    height: 4px;
+}
+
+.codexbar-panel-meter-secondary {
+    height: 3px;
+}
+
+.codexbar-panel-value {
+    min-width: 3.8em;
+    text-align: right;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+}
+
+.codexbar-card-item {
+    padding: 0;
+}
+
+.codexbar-card {
+    min-width: 312px;
+    padding: 16px 16px 14px 16px;
+    border-radius: 18px;
+    spacing: 12px;
+}
+
+.codexbar-card-header {
+    spacing: 8px;
+}
+
+.codexbar-card-header-top {
+    spacing: 14px;
+}
+
+.codexbar-card-identity-column {
+    spacing: 4px;
+}
+
+.codexbar-card-title-row {
+    spacing: 8px;
+}
+
+.codexbar-provider-chip {
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
+
+.codexbar-provider-name {
+    font-size: 19px;
+    font-weight: 800;
+}
+
+.codexbar-card-identity {
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.codexbar-card-subtitle {
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 11px;
+}
+
+.codexbar-card-hero {
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+}
+
+.codexbar-divider {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.codexbar-inline-divider {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.codexbar-section {
+    spacing: 10px;
+}
+
+.codexbar-section-title {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.48);
+}
+
+.codexbar-metric-row {
+    spacing: 5px;
+}
+
+.codexbar-metric-top {
+    spacing: 8px;
+}
+
+.codexbar-metric-title {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.codexbar-metric-percent {
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.codexbar-metric-detail {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.codexbar-progress-track {
+    height: 8px;
+    min-width: 244px;
+    border-radius: 999px;
+}
+
+.codexbar-progress-track-thin {
+    height: 6px;
+}
+
+.codexbar-progress-fill {
+    height: 100%;
+    border-radius: 999px;
+}
+
+.codexbar-credits-section {
+    spacing: 5px;
+}
+
+.codexbar-credits-header {
+    spacing: 8px;
+}
+
+.codexbar-credits-value {
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.codexbar-credits-hint {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.58);
+}
+
+.codexbar-facts-section {
+    spacing: 4px;
+}
+
+.codexbar-fact-row {
+    spacing: 10px;
+}
+
+.codexbar-fact-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.codexbar-fact-value {
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.codexbar-error-banner {
+    spacing: 4px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background-color: rgba(255, 105, 105, 0.12);
+    border: 1px solid rgba(255, 105, 105, 0.2);
+}
+
+.codexbar-error-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: #ff9a9a;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.codexbar-error-body {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.codexbar-actions-item {
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.codexbar-actions-box {
+    min-width: 312px;
+    spacing: 10px;
+}
+
+.codexbar-switcher-row,
+.codexbar-tools-row {
+    spacing: 8px;
+}
+
+.codexbar-action-button {
+    padding: 8px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.04);
+    font-weight: 700;
+}
+
+.codexbar-action-button:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.codexbar-action-button-active {
+    background-color: rgba(255, 255, 255, 0.13);
+    border-color: rgba(255, 255, 255, 0.18);
+}

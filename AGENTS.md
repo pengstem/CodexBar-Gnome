@@ -1,41 +1,39 @@
 # Repository Guidelines
 
-## Project Structure & Modules
-- `Sources/CodexBar`: Swift 6 menu bar app (usage/credits probes, icon renderer, settings). Keep changes small and reuse existing helpers.
-- `Tests/CodexBarTests`: XCTest coverage for usage parsing, status probes, icon patterns; mirror new logic with focused tests.
-- `Scripts`: build/package helpers (`package_app.sh`, `sign-and-notarize.sh`, `make_appcast.sh`, `build_icon.sh`, `compile_and_run.sh`).
-- `docs`: release notes and process (`docs/RELEASING.md`, screenshots). Root-level zips/appcast are generated artifacts—avoid editing except during releases.
+## Project Structure
+- `linux/backend`: Rust backend for live provider polling, config loading, and JSON payload generation.
+- `linux/gnome-extension`: GNOME Shell frontend. Treat this as the primary user-facing surface.
+- `Scripts/install_codexbar_gnome.sh`: local install/update path into `~/.local/bin` and the GNOME extensions dir.
+- `docs`: Linux-only operational docs. Keep them short and current.
+- `Sources/CodexBar` and `Sources/CodexBarCore`: temporary reference material from the old app. Do not treat them as the active product path.
 
 ## Build, Test, Run
-- Dev loop: `./Scripts/compile_and_run.sh` kills old instances, runs `swift build` + `swift test`, packages, relaunches `CodexBar.app`, and confirms it stays running.
-- Quick build/test: `swift build` (debug) or `swift build -c release`; `swift test` for the full XCTest suite.
-- Package locally: `./Scripts/package_app.sh` to refresh `CodexBar.app`, then restart with `pkill -x CodexBar || pkill -f CodexBar.app || true; cd /Users/steipete/Projects/codexbar && open -n /Users/steipete/Projects/codexbar/CodexBar.app`.
-- Release flow: `./Scripts/sign-and-notarize.sh` (arm64 notarized zip) and `./Scripts/make_appcast.sh <zip> <feed-url>`; follow validation steps in `docs/RELEASING.md`.
+- Backend tests: `cargo test --manifest-path linux/backend/Cargo.toml`
+- Backend build: `cargo build --release --manifest-path linux/backend/Cargo.toml`
+- Repo check: `pnpm check`
+- Install/reload locally:
+  - `./Scripts/install_codexbar_gnome.sh`
+  - `gnome-extensions disable codexbar-gnome && gnome-extensions enable codexbar-gnome`
+- Live backend probe:
+  - `~/.local/bin/codexbar-gnome-backend poll --provider codex --pretty`
 
-## Coding Style & Naming
-- Enforce SwiftFormat/SwiftLint: run `swiftformat Sources Tests` and `swiftlint --strict`. 4-space indent, 120-char lines, explicit `self` is intentional—do not remove.
-- Favor small, typed structs/enums; maintain existing `MARK` organization. Use descriptive symbols; match current commit tone.
+## Coding Style
+- Prefer small, explicit Rust and JS changes over framework-heavy abstractions.
+- Keep GNOME extension code direct and readable; avoid unnecessary indirection.
+- Treat the old Swift code as reference only. If you borrow behavior from it, translate the behavior, not the structure.
 
 ## Testing Guidelines
-- Add/extend XCTest cases under `Tests/CodexBarTests/*Tests.swift` (`FeatureNameTests` with `test_caseDescription` methods).
-- Always run `swift test` (or `./Scripts/compile_and_run.sh`) before handoff; add fixtures for new parsing/formatting scenarios.
-- After any code change, run `pnpm check` and fix all reported format/lint issues before handoff.
+- Always run `cargo test --manifest-path linux/backend/Cargo.toml` after backend changes.
+- Always run `pnpm check` before handoff.
+- When changing GNOME schema or extension metadata, ensure schema compilation still succeeds.
+- When changing installed extension behavior, verify the extension becomes active after reload and that GNOME Shell logs stay clean.
 
-## Commit & PR Guidelines
-- Commit messages: short imperative clauses (e.g., “Improve usage probe”, “Fix icon dimming”); keep commits scoped.
-- PRs/patches should list summary, commands run, screenshots/GIFs for UI changes, and linked issue/reference when relevant.
+## Cleanup Policy
+- The active repo direction is Linux GNOME-first.
+- Remove dead macOS/release/upstream maintenance code rather than preserving unused workflows.
+- Keep only the minimum old Swift/macOS files still needed as frontend or behavior reference material.
 
 ## Agent Notes
-- Use the provided scripts and package manager (SwiftPM); avoid adding dependencies or tooling without confirmation.
-- Validate behavior against the freshly built bundle; restart via the pkill+open command above to avoid running stale binaries.
-- To guarantee the right bundle is running after a rebuild, use: `pkill -x CodexBar || pkill -f CodexBar.app || true; cd /Users/steipete/Projects/codexbar && open -n /Users/steipete/Projects/codexbar/CodexBar.app`.
-- After any code change that affects the app, always rebuild with `Scripts/package_app.sh` and restart the app using the command above before validating behavior.
-- If you edited code, run `scripts/compile_and_run.sh` before handoff; it kills old instances, builds, tests, packages, relaunches, and verifies the app stays running.
-- Per user request: after every edit (code or docs), rebuild and restart using `./Scripts/compile_and_run.sh` so the running app reflects the latest changes.
-- Release script: keep it in the foreground; do not background it—wait until it finishes.
-- Release keys: find in `~/.profile` if missing (Sparkle + App Store Connect).
-- Prefer modern SwiftUI/Observation macros: use `@Observable` models with `@State` ownership and `@Bindable` in views; avoid `ObservableObject`, `@ObservedObject`, and `@StateObject`.
-- Favor modern macOS 15+ APIs over legacy/deprecated counterparts when refactoring (Observation, new display link APIs, updated menu item styling, etc.).
-- Keep provider data siloed: when rendering usage or account info for a provider (Claude vs Codex), never display identity/plan fields sourced from a different provider.***
-- Claude CLI status line is custom + user-configurable; never rely on it for usage parsing.
-- Cookie imports: default Chrome-only when possible to avoid other browser prompts; override via browser list when needed.
+- Do not reintroduce macOS-first scripts, Sparkle flows, or `.app` packaging assumptions.
+- Keep provider data siloed: never mix identity/plan fields between providers.
+- Codex is the primary supported provider right now; Claude is optional and should degrade cleanly when local credentials are absent.

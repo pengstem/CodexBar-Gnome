@@ -1,22 +1,24 @@
 ---
-summary: "CodexBar config file layout for CLI + app settings."
+summary: "Linux config file layout for CodexBar-Gnome."
 read_when:
-  - "Editing the CodexBar config file or moving settings off Keychain."
-  - "Adding new provider settings fields or defaults."
-  - "Explaining CLI/app configuration and security."
+  - "Editing provider enablement or source settings."
+  - "Changing config migration or defaults."
 ---
 
 # Configuration
 
-CodexBar reads a single JSON config file for CLI and app settings.
-Secrets (API keys, cookies, tokens) live here; Keychain is not used.
+CodexBar-Gnome reads a single JSON config file:
 
-## Location
+- `~/.config/codexbar-gnome/config.json`
+
+On first install, the backend copies forward a legacy file from:
+
 - `~/.codexbar/config.json`
-- The directory is created if missing.
-- Permissions are forced to `0600` on macOS and Linux.
 
-## Root shape
+Permissions should remain `0600`.
+
+## Supported shape
+
 ```json
 {
   "version": 1,
@@ -24,61 +26,25 @@ Secrets (API keys, cookies, tokens) live here; Keychain is not used.
     {
       "id": "codex",
       "enabled": true,
-      "source": "auto",
-      "cookieSource": "auto",
-      "cookieHeader": null,
-      "apiKey": null,
-      "region": null,
-      "workspaceID": null,
-      "tokenAccounts": null
-    }
-  ]
-}
-```
-
-## Provider fields
-All provider fields are optional unless noted.
-
-- `id` (required): provider identifier.
-- `enabled`: enable/disable provider (defaults to provider default).
-- `source`: preferred source mode.
-  - `auto|web|cli|oauth|api`
-  - `auto` uses provider-specific fallback order (see `docs/providers.md`).
-  - `api` uses provider API key flow (when supported).
-- `apiKey`: raw API token for providers that support direct API usage.
-- `cookieSource`: cookie selection policy.
-  - `auto` (browser import), `manual` (use `cookieHeader`), `off` (disable cookies)
-- `cookieHeader`: raw cookie header value (e.g. `key=value; other=...`).
-- `region`: provider-specific region (e.g. `zai`, `minimax`).
-- `workspaceID`: provider-specific workspace ID (e.g. `opencode`).
-- `tokenAccounts`: multi-account tokens for a provider.
-
-### tokenAccounts
-```json
-{
-  "version": 1,
-  "activeIndex": 0,
-  "accounts": [
+      "source": "oauth"
+    },
     {
-      "id": "00000000-0000-0000-0000-000000000000",
-      "label": "user@example.com",
-      "token": "sk-...",
-      "addedAt": 1735123456,
-      "lastUsed": 1735220000
+      "id": "claude",
+      "enabled": false,
+      "source": "oauth"
     }
   ]
 }
 ```
 
-## Provider IDs
-Current IDs (see `Sources/CodexBarCore/Providers/Providers.swift`):
-`codex`, `claude`, `cursor`, `opencode`, `factory`, `gemini`, `antigravity`, `copilot`, `zai`, `minimax`, `kimi`, `kilo`, `kiro`, `vertexai`, `augment`, `jetbrains`, `kimik2`, `amp`, `ollama`, `synthetic`, `warp`, `openrouter`.
+## Active fields
 
-## Ordering
-The order of `providers` controls display/order in the app and CLI. Reorder the array to change ordering.
+- `id`: currently `codex` or `claude`
+- `enabled`: whether the provider should appear in the backend payload
+- `source`: currently only `oauth` and `auto` are supported by the Linux backend
 
 ## Notes
-- Fields not relevant to a provider are ignored.
-- Omitted providers are appended with defaults during normalization.
-- Keep the file private; it contains secrets.
-- Validate the file with `codexbar config validate` (JSON output available with `--format json`).
+
+- `auto` is treated as OAuth-only on the Linux path today.
+- Unsupported legacy fields are ignored by the current backend.
+- Keep the file minimal; do not store unrelated app-era settings here.

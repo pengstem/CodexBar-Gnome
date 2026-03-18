@@ -1,28 +1,24 @@
 ---
-summary: "Provider status checks, sources, and indicator mapping."
+summary: "Status-page polling behavior for the Linux backend."
 read_when:
-  - Changing status sources or status UI
-  - Debugging status polling or incident parsing
+  - "Changing status checks or handling degraded network behavior."
 ---
 
-# Status checks
+# Status
 
-## Sources
-- OpenAI + Claude + Cursor + Factory + Copilot: Statuspage.io `api/v2/status.json`.
-- Gemini + Antigravity: Google Workspace incidents feed for the Gemini product.
+The Linux backend polls provider status pages separately from usage.
+
+Current URLs:
+
+- Codex: `https://status.openai.com/api/v2/status.json`
+- Claude: `https://status.claude.com/api/v2/status.json`
 
 ## Behavior
-- Toggle: Settings → Advanced → “Check provider status”.
-- `UsageStore` polls status and stores `ProviderStatus` for indicator/description.
-- Menu shows incident summary + freshness; icon overlays indicator.
 
-## Workspace incidents
-- Feed: `https://www.google.com/appsstatus/dashboard/incidents.json`.
-- Uses the Gemini product ID from provider metadata.
-- Chooses the most severe active incident for the provider.
+- Status failures must not force the provider into an overall error state if live usage succeeds.
+- When the status fetch fails, the payload should return:
+  - `indicator: "unknown"`
+  - a short degraded description
+  - the public status URL
 
-## Links
-- If `statusPageURL` is set, status polling uses it and the menu action opens it.
-- If only `statusLinkURL` exists, the menu action opens it without polling.
-
-See also: `docs/providers.md`.
+This keeps the GNOME UI usable even when the status endpoint is flaky.
