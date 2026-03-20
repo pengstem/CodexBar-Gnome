@@ -418,6 +418,48 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
         return new St.Widget({x_expand: true});
     }
 
+    _setText(actor, text) {
+        if (actor.text !== text)
+            actor.text = text;
+    }
+
+    _setVisible(actor, visible) {
+        if (actor.visible !== visible)
+            actor.visible = visible;
+    }
+
+    _setWidth(actor, width) {
+        if (actor._codexbarWidth === width)
+            return;
+        actor._codexbarWidth = width;
+        actor.set_width(width);
+    }
+
+    _setOpacity(actor, opacity) {
+        if (actor.opacity !== opacity)
+            actor.opacity = opacity;
+    }
+
+    _setVariantClass(actor, slot, className) {
+        const property = `_codexbarVariantClass_${slot}`;
+        const previous = actor[property];
+        if (previous === className)
+            return;
+
+        if (previous)
+            actor.remove_style_class_name(previous);
+        if (className)
+            actor.add_style_class_name(className);
+
+        actor[property] = className;
+    }
+
+    _themeVariant(provider, isError) {
+        if (isError)
+            return 'error';
+        return provider === 'claude' ? 'claude' : 'codex';
+    }
+
     _connectSettings() {
         const reloadKeys = [
             'backend-path',
@@ -531,69 +573,71 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
         const secondary = snapshot?.usage?.secondary ?? null;
         const tertiary = snapshot?.usage?.tertiary ?? null;
         const error = this._resolvedError(snapshot);
+        const isError = Boolean(error);
+        const themeVariant = this._themeVariant(effectiveProvider, isError);
 
-        this._applyProviderTheme(meta, Boolean(error));
+        this._applyProviderTheme(themeVariant);
 
-        this._header.chip.text = meta.badge;
-        this._header.providerName.text = meta.label;
-        this._header.heroValue.text = primary ? `${Math.round(primary.remaining_percent)}% left` : 'Offline';
-        this._header.identity.text = this._identityText(snapshot);
-        this._header.subtitle.text = this._subtitleText(snapshot, error);
+        this._setText(this._header.chip, meta.badge);
+        this._setText(this._header.providerName, meta.label);
+        this._setText(this._header.heroValue, primary ? `${Math.round(primary.remaining_percent)}% left` : 'Offline');
+        this._setText(this._header.identity, this._identityText(snapshot));
+        this._setText(this._header.subtitle, this._subtitleText(snapshot, error));
 
-        this._syncMeter(this._panelSessionMeter, primary?.remaining_percent, PANEL_METER_WIDTH, meta.accent, Boolean(error));
-        this._syncMeter(this._panelWeeklyMeter, secondary?.remaining_percent, PANEL_METER_WIDTH, meta.accent, Boolean(error), true);
+        this._syncMeter(this._panelSessionMeter, primary?.remaining_percent, PANEL_METER_WIDTH, themeVariant);
+        this._syncMeter(this._panelWeeklyMeter, secondary?.remaining_percent, PANEL_METER_WIDTH, themeVariant, true);
 
-        this._syncMetricRow(this._usageSection.session, primary, meta.accent, 'Session');
-        this._syncMetricRow(this._usageSection.weekly, secondary, meta.accent, 'Weekly');
-        this._syncMetricRow(this._usageSection.tertiary, tertiary, meta.accent, 'Model cap');
-        this._usageSection.box.visible = Boolean(primary || secondary || tertiary);
+        this._syncMetricRow(this._usageSection.session, primary, themeVariant);
+        this._syncMetricRow(this._usageSection.weekly, secondary, themeVariant);
+        this._syncMetricRow(this._usageSection.tertiary, tertiary, themeVariant);
+        this._setVisible(this._usageSection.box, Boolean(primary || secondary || tertiary));
 
         const hasCredits = snapshot?.credits?.remaining === 0 || Boolean(snapshot?.credits?.remaining);
-        this._creditsSection.box.visible = Boolean(hasCredits);
+        this._setVisible(this._creditsSection.box, Boolean(hasCredits));
         if (hasCredits) {
-            this._creditsSection.value.text = `${snapshot.credits.remaining.toFixed(2)} remaining`;
-            this._creditsSection.hint.text = snapshot?.source === 'oauth'
+            this._setText(this._creditsSection.value, `${snapshot.credits.remaining.toFixed(2)} remaining`);
+            this._setText(this._creditsSection.hint, snapshot?.source === 'oauth'
                 ? 'Current Codex balance from OAuth usage'
-                : 'Current credit balance';
+                : 'Current credit balance');
         }
 
-        this._factsSection.plan.value.text = this._displayLoginMethod(snapshot?.identity?.login_method) ?? 'Unavailable';
-        this._factsSection.source.value.text = snapshot?.source?.toUpperCase() ?? 'Unavailable';
-        this._factsSection.status.value.text = statusMeta.label;
-        this._factsSection.status.value.set_style(`color: ${statusMeta.color};`);
-        this._factsSection.updated.value.text = this._updatedSummary(snapshot);
+        this._setText(this._factsSection.plan.value, this._displayLoginMethod(snapshot?.identity?.login_method) ?? 'Unavailable');
+        this._setText(this._factsSection.source.value, snapshot?.source?.toUpperCase() ?? 'Unavailable');
+        this._setText(this._factsSection.status.value, statusMeta.label);
+        this._setVariantClass(this._factsSection.status.value, 'status', `codexbar-status-${statusMeta.indicator}`);
+        this._setText(this._factsSection.updated.value, this._updatedSummary(snapshot));
 
-        this._errorBanner.box.visible = Boolean(error);
-        this._errorBanner.body.text = error ?? '';
+        this._setVisible(this._errorBanner.box, isError);
+        this._setText(this._errorBanner.body, error ?? '');
 
-        this._panelBox.set_style(Boolean(error) ? 'opacity: 0.78;' : 'opacity: 1;');
+        this._setOpacity(this._panelBox, isError ? 199 : 255);
 
         this._setButtonActive(this._codexButton, effectiveProvider === 'codex');
         this._setButtonActive(this._claudeButton, effectiveProvider === 'claude');
     }
 
-    _syncMetricRow(metric, window, accent, titleText) {
+    _syncMetricRow(metric, window, themeVariant) {
         const visible = Boolean(window);
-        metric.item.visible = visible;
+        this._setVisible(metric.item, visible);
         if (!visible)
             return;
 
         const remaining = Math.round(window.remaining_percent);
-        metric.percent.text = `${remaining}% left`;
-        metric.detail.text = this._windowDetail(window);
-        this._syncMeter(metric.meter, window.remaining_percent, MENU_METER_WIDTH, accent, false);
+        this._setText(metric.percent, `${remaining}% left`);
+        this._setText(metric.detail, this._windowDetail(window));
+        this._syncMeter(metric.meter, window.remaining_percent, MENU_METER_WIDTH, themeVariant);
     }
 
-    _syncMeter(meter, remainingPercent, width, accent, isError, thin = false) {
-        const trackColor = isError ? 'rgba(255, 117, 117, 0.14)' : 'rgba(255, 255, 255, 0.08)';
-        meter.track.set_style(`background-color: ${trackColor};`);
-
+    _syncMeter(meter, remainingPercent, width, themeVariant, thin = false) {
         const normalized = typeof remainingPercent === 'number'
             ? Math.max(0, Math.min(100, remainingPercent))
             : 0;
         const fillWidth = normalized > 0 ? Math.max(2, Math.round(width * normalized / 100)) : 0;
-        meter.fill.set_width(fillWidth);
-        meter.fill.set_style(`background-color: ${accent};`);
+        const trackVariant = themeVariant === 'error' ? 'error' : 'ok';
+
+        this._setWidth(meter.fill, fillWidth);
+        this._setVariantClass(meter.track, 'track', `codexbar-progress-track-${trackVariant}`);
+        this._setVariantClass(meter.fill, 'fill', `codexbar-progress-fill-${themeVariant}`);
 
         if (thin)
             meter.track.add_style_class_name('codexbar-progress-track-thin');
@@ -601,18 +645,11 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
             meter.track.remove_style_class_name('codexbar-progress-track-thin');
     }
 
-    _applyProviderTheme(meta, isError) {
-        this._card.set_style(`
-            background: linear-gradient(180deg, rgba(20, 26, 36, 0.97), rgba(14, 18, 26, 0.97));
-            border: 1px solid ${isError ? 'rgba(255, 117, 117, 0.28)' : meta.accentBorder};
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-        `);
-        this._header.chip.set_style(`
-            background-color: ${isError ? 'rgba(255, 117, 117, 0.16)' : meta.accentSoft};
-            color: ${isError ? '#ff9393' : meta.accent};
-        `);
-        this._header.heroValue.set_style(`color: ${isError ? '#ff9393' : meta.accent};`);
-        this._creditsSection.value.set_style(`color: ${meta.accent};`);
+    _applyProviderTheme(themeVariant) {
+        this._setVariantClass(this._card, 'card', `codexbar-card-theme-${themeVariant}`);
+        this._setVariantClass(this._header.chip, 'chip', `codexbar-provider-chip-theme-${themeVariant}`);
+        this._setVariantClass(this._header.heroValue, 'hero', `codexbar-hero-theme-${themeVariant}`);
+        this._setVariantClass(this._creditsSection.value, 'credits', `codexbar-credits-theme-${themeVariant}`);
     }
 
     _setButtonActive(button, active) {
