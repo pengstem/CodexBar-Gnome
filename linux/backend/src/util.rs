@@ -139,14 +139,14 @@ context = ssl.create_default_context()
 context.minimum_version = ssl.TLSVersion.TLSv1_2
 
 last_error = None
-for attempt in range(3):
+for attempt in range(2):
     req = urllib.request.Request(payload['url'], method='GET')
     for header in payload.get('headers', []):
         req.add_header(header['name'], header['value'])
     req.add_header('Connection', 'close')
 
     try:
-        with urllib.request.urlopen(req, timeout=30, context=context) as response:
+        with urllib.request.urlopen(req, timeout=8, context=context) as response:
             body = response.read().decode('utf-8', 'replace')
             json.dump({'status': response.status, 'body': body}, sys.stdout)
             sys.exit(0)
@@ -156,7 +156,7 @@ for attempt in range(3):
         sys.exit(0)
     except Exception as error:
         last_error = error
-        time.sleep(0.6)
+        time.sleep(0.3)
 
 print(str(last_error), file=sys.stderr)
 sys.exit(1)

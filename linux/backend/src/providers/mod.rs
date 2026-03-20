@@ -1,6 +1,8 @@
 mod claude;
 mod codex;
 
+use std::thread;
+
 use crate::config::ResolvedConfig;
 use crate::payload::ProviderSnapshot;
 
@@ -44,28 +46,37 @@ pub fn parse_provider_filter(value: &str) -> Result<ProviderFilter, String> {
 }
 
 pub fn collect_snapshots(config: &ResolvedConfig, filter: ProviderFilter) -> Vec<ProviderSnapshot> {
-    let mut snapshots = Vec::new();
+    let targets: Vec<ProviderKind> = [ProviderKind::Codex, ProviderKind::Claude]
+        .into_iter()
+        .filter(|p| filter.matches(*p))
+        .collect();
 
-    for provider in [ProviderKind::Codex, ProviderKind::Claude] {
-        if !filter.matches(provider) {
-            continue;
-        }
+    thread::scope(|s| {
+        let handles: Vec<_> = targets
+            .iter()
+            .map(|&provider| {
+                s.spawn(move || {
+                    if !config.provider_enabled(provider.slug()) {
+                        if matches!(filter, ProviderFilter::One(_)) {
+                            return Some(disabled_snapshot(provider));
+                        }
+                        return None;
+                    }
 
-        if !config.provider_enabled(provider.slug()) {
-            if matches!(filter, ProviderFilter::One(_)) {
-                snapshots.push(disabled_snapshot(provider));
-            }
-            continue;
-        }
+                    let snapshot = match provider {
+                        ProviderKind::Codex => codex::fetch(config),
+                        ProviderKind::Claude => claude::fetch(config),
+                    };
+                    Some(snapshot)
+                })
+            })
+            .collect();
 
-        let snapshot = match provider {
-            ProviderKind::Codex => codex::fetch(config),
-            ProviderKind::Claude => claude::fetch(config),
-        };
-        snapshots.push(snapshot);
-    }
-
-    snapshots
+        handles
+            .into_iter()
+            .filter_map(|h| h.join().ok().flatten())
+            .collect()
+    })
 }
 
 fn disabled_snapshot(provider: ProviderKind) -> ProviderSnapshot {

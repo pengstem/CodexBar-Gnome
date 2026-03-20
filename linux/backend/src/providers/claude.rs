@@ -1,11 +1,13 @@
 use std::fs;
 use std::path::PathBuf;
+use std::thread;
 
 use serde::Deserialize;
 
 use crate::config::ResolvedConfig;
 use crate::payload::{
-    CreditsSnapshot, IdentitySnapshot, ProviderSnapshot, RateWindowSnapshot, UsageSnapshot,
+    CreditsSnapshot, IdentitySnapshot, ProviderSnapshot, RateWindowSnapshot, StatusSnapshot,
+    UsageSnapshot,
 };
 use crate::status;
 use crate::util;
@@ -70,8 +72,18 @@ struct ClaudeExtraUsage {
 }
 
 pub fn fetch(config: &ResolvedConfig) -> ProviderSnapshot {
-    match fetch_inner(config) {
-        Ok(snapshot) => snapshot,
+    let (usage_result, status_snapshot) = thread::scope(|s| {
+        let status_handle = s.spawn(|| status::fetch_claude_status());
+        let usage_result = fetch_inner(config);
+        let status_snapshot = status_handle.join().unwrap_or_else(|_| fallback_status());
+        (usage_result, status_snapshot)
+    });
+
+    match usage_result {
+        Ok(mut snapshot) => {
+            snapshot.status = Some(status_snapshot);
+            snapshot
+        }
         Err(error) => ProviderSnapshot {
             provider: "claude".to_string(),
             source: "oauth".to_string(),
@@ -79,9 +91,17 @@ pub fn fetch(config: &ResolvedConfig) -> ProviderSnapshot {
             usage: None,
             credits: None,
             identity: None,
-            status: Some(status::fetch_claude_status()),
+            status: Some(status_snapshot),
             error: Some(error),
         },
+    }
+}
+
+fn fallback_status() -> StatusSnapshot {
+    StatusSnapshot {
+        indicator: "unknown".to_string(),
+        description: "Status unavailable".to_string(),
+        url: "https://status.claude.com/".to_string(),
     }
 }
 
@@ -159,7 +179,7 @@ fn fetch_inner(config: &ResolvedConfig) -> Result<ProviderSnapshot, String> {
         usage: Some(usage),
         credits,
         identity: Some(identity),
-        status: Some(status::fetch_claude_status()),
+        status: None,
         error: None,
     })
 }
