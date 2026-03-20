@@ -12,7 +12,7 @@ import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 
 const DEFAULT_BACKEND_PATH = `${GLib.get_home_dir()}/.local/bin/codexbar-gnome-backend`;
 const DEFAULT_CONFIG_DIR = `${GLib.get_home_dir()}/.config/codexbar-gnome`;
-const PANEL_METER_WIDTH = 18;
+const PANEL_METER_WIDTH = 32;
 const MENU_METER_WIDTH = 244;
 
 const PROVIDER_META = {
@@ -75,12 +75,6 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
             style_class: 'panel-status-menu-box codexbar-panel-box',
         });
 
-        this._panelBadge = new St.Label({
-            text: 'CX',
-            style_class: 'codexbar-panel-badge',
-            y_align: Clutter.ActorAlign.CENTER,
-        });
-
         this._panelMeters = new St.BoxLayout({
             vertical: true,
             style_class: 'codexbar-panel-meters',
@@ -90,15 +84,7 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
         this._panelMeters.add_child(this._panelSessionMeter.track);
         this._panelMeters.add_child(this._panelWeeklyMeter.track);
 
-        this._panelLabel = new St.Label({
-            text: '--%',
-            style_class: 'codexbar-panel-value',
-            y_align: Clutter.ActorAlign.CENTER,
-        });
-
-        this._panelBox.add_child(this._panelBadge);
         this._panelBox.add_child(this._panelMeters);
-        this._panelBox.add_child(this._panelLabel);
         this.add_child(this._panelBox);
     }
 
@@ -414,6 +400,7 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
         const fill = new St.Widget({
             style_class: 'codexbar-progress-fill',
             x_expand: false,
+            y_expand: true,
         });
         track.set_child(fill);
         return {track, fill};
@@ -547,9 +534,6 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
 
         this._applyProviderTheme(meta, Boolean(error));
 
-        const remainingPercent = primary ? `${Math.round(primary.remaining_percent)}%` : '--';
-        this._panelBadge.text = meta.badge;
-        this._panelLabel.text = this._settings.get_boolean('show-percentage') ? remainingPercent : '';
         this._header.chip.text = meta.badge;
         this._header.providerName.text = meta.label;
         this._header.heroValue.text = primary ? `${Math.round(primary.remaining_percent)}% left` : 'Offline';
@@ -601,7 +585,7 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
     }
 
     _syncMeter(meter, remainingPercent, width, accent, isError, thin = false) {
-        const trackColor = isError ? 'rgba(255, 117, 117, 0.18)' : 'rgba(255, 255, 255, 0.11)';
+        const trackColor = isError ? 'rgba(255, 117, 117, 0.14)' : 'rgba(255, 255, 255, 0.08)';
         meter.track.set_style(`background-color: ${trackColor};`);
 
         const normalized = typeof remainingPercent === 'number'
@@ -619,18 +603,15 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
 
     _applyProviderTheme(meta, isError) {
         this._card.set_style(`
-            background: linear-gradient(180deg, rgba(18, 24, 33, 0.96), rgba(12, 16, 23, 0.96));
-            border: 1px solid ${isError ? 'rgba(255, 117, 117, 0.32)' : meta.accentBorder};
-            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.32);
+            background: linear-gradient(180deg, rgba(20, 26, 36, 0.97), rgba(14, 18, 26, 0.97));
+            border: 1px solid ${isError ? 'rgba(255, 117, 117, 0.28)' : meta.accentBorder};
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.04);
         `);
         this._header.chip.set_style(`
             background-color: ${isError ? 'rgba(255, 117, 117, 0.16)' : meta.accentSoft};
             color: ${isError ? '#ff9393' : meta.accent};
         `);
-        this._panelBadge.set_style(`
-            background-color: ${isError ? 'rgba(255, 117, 117, 0.16)' : meta.accentSoft};
-            color: ${isError ? '#ff9393' : meta.accent};
-        `);
+        this._header.heroValue.set_style(`color: ${isError ? '#ff9393' : meta.accent};`);
         this._creditsSection.value.set_style(`color: ${meta.accent};`);
     }
 
