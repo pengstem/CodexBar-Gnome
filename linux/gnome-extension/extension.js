@@ -107,17 +107,16 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
         this._usageSection = this._buildUsageSection();
         this._creditsSection = this._buildCreditsSection();
         this._factsSection = this._buildFactsSection();
+        this._actionsSection = this._buildActionsSection();
 
         this._card.add_child(this._header.box);
         this._card.add_child(this._errorBanner.box);
-        this._card.add_child(this._createDivider());
         this._card.add_child(this._usageSection.box);
         this._card.add_child(this._creditsSection.box);
         this._card.add_child(this._factsSection.box);
+        this._card.add_child(this._actionsSection.box);
 
         this.menu.addMenuItem(this._cardItem);
-        this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-        this.menu.addMenuItem(this._buildActionItem());
     }
 
     _buildHeader() {
@@ -138,10 +137,15 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
             style_class: 'codexbar-card-title-row',
         });
 
-        const chip = new St.Label({
-            text: 'CX',
+        const chip = new St.BoxLayout({
             style_class: 'codexbar-provider-chip',
         });
+        const chipLabel = new St.Label({
+            text: 'CX',
+            style_class: 'codexbar-provider-chip-label',
+            y_align: Clutter.ActorAlign.CENTER,
+        });
+        chip.add_child(chipLabel);
         const providerName = new St.Label({
             text: 'Codex',
             style_class: 'codexbar-provider-name',
@@ -175,6 +179,7 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
         return {
             box,
             chip,
+            chipLabel,
             providerName,
             identity,
             subtitle,
@@ -204,11 +209,15 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
     _buildUsageSection() {
         const box = new St.BoxLayout({
             vertical: true,
-            style_class: 'codexbar-section',
+            style_class: 'codexbar-section codexbar-usage-section',
         });
         const title = new St.Label({
             text: 'Usage',
             style_class: 'codexbar-section-title',
+        });
+        const surface = new St.BoxLayout({
+            vertical: true,
+            style_class: 'codexbar-section-surface codexbar-usage-surface',
         });
         box.add_child(title);
 
@@ -216,17 +225,22 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
         const weekly = this._createMetricRow('Weekly');
         const tertiary = this._createMetricRow('Model cap');
 
-        box.add_child(session.item);
-        box.add_child(weekly.item);
-        box.add_child(tertiary.item);
+        surface.add_child(session.item);
+        surface.add_child(weekly.item);
+        surface.add_child(tertiary.item);
+        box.add_child(surface);
 
-        return {box, session, weekly, tertiary};
+        return {box, surface, session, weekly, tertiary};
     }
 
     _buildCreditsSection() {
         const box = new St.BoxLayout({
             vertical: true,
             style_class: 'codexbar-credits-section',
+        });
+        const surface = new St.BoxLayout({
+            vertical: true,
+            style_class: 'codexbar-section-surface codexbar-credits-surface',
         });
 
         const titleRow = new St.BoxLayout({
@@ -249,44 +263,47 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
             style_class: 'codexbar-credits-hint',
         });
 
-        box.add_child(this._createDivider('codexbar-inline-divider'));
-        box.add_child(titleRow);
-        box.add_child(hint);
+        surface.add_child(titleRow);
+        surface.add_child(hint);
+        box.add_child(surface);
         box.visible = false;
 
-        return {box, value, hint};
+        return {box, surface, value, hint};
     }
 
     _buildFactsSection() {
         const box = new St.BoxLayout({
             vertical: true,
-            style_class: 'codexbar-facts-section',
+            style_class: 'codexbar-section codexbar-facts-section',
         });
-        box.add_child(this._createDivider('codexbar-inline-divider'));
+        const title = new St.Label({
+            text: 'Details',
+            style_class: 'codexbar-section-title',
+        });
+        const surface = new St.BoxLayout({
+            vertical: true,
+            style_class: 'codexbar-section-surface codexbar-facts-surface',
+        });
 
         const plan = this._createFactRow('Plan');
         const source = this._createFactRow('Source');
         const status = this._createFactRow('Status');
         const updated = this._createFactRow('Updated');
 
-        box.add_child(plan.item);
-        box.add_child(source.item);
-        box.add_child(status.item);
-        box.add_child(updated.item);
+        surface.add_child(plan.item);
+        surface.add_child(source.item);
+        surface.add_child(status.item);
+        surface.add_child(updated.item);
+        box.add_child(title);
+        box.add_child(surface);
 
-        return {box, plan, source, status, updated};
+        return {box, surface, plan, source, status, updated};
     }
 
-    _buildActionItem() {
-        const item = new PopupMenu.PopupBaseMenuItem({
-            reactive: false,
-            can_focus: false,
-        });
-        item.add_style_class_name('codexbar-actions-item');
-
-        const actions = new St.BoxLayout({
+    _buildActionsSection() {
+        const box = new St.BoxLayout({
             vertical: true,
-            style_class: 'codexbar-actions-box',
+            style_class: 'codexbar-actions-section',
             x_expand: true,
         });
 
@@ -296,10 +313,10 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
         });
         this._codexButton = this._createActionButton('Codex', () => {
             this._settings.set_string('default-provider', 'codex');
-        });
+        }, 'switcher', 'codex');
         this._claudeButton = this._createActionButton('Claude', () => {
             this._settings.set_string('default-provider', 'claude');
-        });
+        }, 'switcher', 'claude');
         switcher.add_child(this._codexButton);
         switcher.add_child(this._claudeButton);
 
@@ -320,10 +337,10 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
         tools.add_child(this._prefsButton);
         tools.add_child(this._configButton);
 
-        actions.add_child(switcher);
-        actions.add_child(tools);
-        item.add_child(actions);
-        return item;
+        box.add_child(this._createDivider('codexbar-inline-divider codexbar-actions-divider'));
+        box.add_child(switcher);
+        box.add_child(tools);
+        return {box};
     }
 
     _createMetricRow(titleText) {
@@ -379,7 +396,7 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
         return {item, value};
     }
 
-    _createActionButton(text, handler, variant = 'switcher') {
+    _createActionButton(text, handler, variant = 'switcher', activeTheme = null) {
         const button = new St.Button({
             label: text,
             style_class: `codexbar-action-button codexbar-action-button-${variant}`,
@@ -388,6 +405,7 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
             reactive: true,
             track_hover: true,
         });
+        button._codexbarActionTheme = activeTheme;
         button.connect('clicked', handler);
         return button;
     }
@@ -578,7 +596,7 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
 
         this._applyProviderTheme(themeVariant);
 
-        this._setText(this._header.chip, meta.badge);
+        this._setText(this._header.chipLabel, meta.badge);
         this._setText(this._header.providerName, meta.label);
         this._setText(this._header.heroValue, primary ? `${Math.round(primary.remaining_percent)}% left` : 'Offline');
         this._setText(this._header.identity, this._identityText(snapshot));
@@ -602,7 +620,7 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
         }
 
         this._setText(this._factsSection.plan.value, this._displayLoginMethod(snapshot?.identity?.login_method) ?? 'Unavailable');
-        this._setText(this._factsSection.source.value, snapshot?.source?.toUpperCase() ?? 'Unavailable');
+        this._setText(this._factsSection.source.value, this._displayLabel(snapshot?.source) ?? 'Unavailable');
         this._setText(this._factsSection.status.value, statusMeta.label);
         this._setVariantClass(this._factsSection.status.value, 'status', `codexbar-status-${statusMeta.indicator}`);
         this._setText(this._factsSection.updated.value, this._updatedSummary(snapshot));
@@ -625,6 +643,7 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
         const remaining = Math.round(window.remaining_percent);
         this._setText(metric.percent, `${remaining}% left`);
         this._setText(metric.detail, this._windowDetail(window));
+        this._setVariantClass(metric.item, 'metric', `codexbar-metric-row-theme-${themeVariant}`);
         this._syncMeter(metric.meter, window.remaining_percent, MENU_METER_WIDTH, themeVariant);
     }
 
@@ -657,6 +676,14 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
             button.add_style_class_name('codexbar-action-button-active');
         else
             button.remove_style_class_name('codexbar-action-button-active');
+
+        this._setVariantClass(
+            button,
+            'action-theme',
+            active && button._codexbarActionTheme
+                ? `codexbar-action-button-active-${button._codexbarActionTheme}`
+                : null
+        );
     }
 
     _statusMeta(snapshot) {
@@ -676,7 +703,7 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
         if (email)
             return email;
 
-        const source = snapshot?.source?.toUpperCase();
+        const source = this._displayLabel(snapshot?.source);
         if (source)
             return `${source} source connected`;
 
@@ -700,6 +727,10 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
     }
 
     _displayLoginMethod(rawValue) {
+        return this._displayLabel(rawValue);
+    }
+
+    _displayLabel(rawValue) {
         if (!rawValue)
             return null;
 
@@ -736,6 +767,8 @@ class CodexBarGnomeIndicator extends PanelMenu.Button {
             return 'Unavailable';
 
         const delta = Math.max(0, Math.floor(GLib.DateTime.new_now_local().to_unix() - updatedAt));
+        if (delta < 10)
+            return 'Just now';
         if (delta < 60)
             return `${delta}s ago`;
         if (delta < 3600)

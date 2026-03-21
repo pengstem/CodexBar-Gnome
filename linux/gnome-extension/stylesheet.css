@@ -6,12 +6,12 @@
 }
 
 .codexbar-panel-meters {
-    spacing: 3px;
+    spacing: 4px;
 }
 
 .codexbar-panel-meter {
-    border-radius: 999px;
     min-width: 32px;
+    border-radius: 999px;
 }
 
 .codexbar-panel-meter-primary {
@@ -29,31 +29,31 @@
 }
 
 .codexbar-card {
-    min-width: 328px;
-    padding: 18px 18px 16px 18px;
-    border-radius: 20px;
+    min-width: 340px;
+    padding: 16px 16px 14px 16px;
+    border-radius: 24px;
     spacing: 14px;
-    background-color: rgba(17, 22, 30, 0.96);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background-color: rgba(13, 17, 23, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .codexbar-card-theme-codex {
-    border-color: rgba(116, 200, 255, 0.24);
+    border-color: rgba(116, 200, 255, 0.20);
 }
 
 .codexbar-card-theme-claude {
-    border-color: rgba(255, 180, 103, 0.24);
+    border-color: rgba(255, 180, 103, 0.20);
 }
 
 .codexbar-card-theme-error {
-    background-color: rgba(26, 18, 21, 0.96);
-    border-color: rgba(255, 117, 117, 0.26);
+    background-color: rgba(24, 17, 20, 0.98);
+    border-color: rgba(255, 117, 117, 0.22);
 }
 
 /* ── Header ────────────────────────────────────────────────────── */
 
 .codexbar-card-header {
-    spacing: 6px;
+    spacing: 4px;
 }
 
 .codexbar-card-header-top {
@@ -61,104 +61,136 @@
 }
 
 .codexbar-card-identity-column {
-    spacing: 5px;
+    spacing: 6px;
 }
 
 .codexbar-card-title-row {
-    spacing: 8px;
+    spacing: 10px;
 }
 
 .codexbar-provider-chip {
-    padding: 3px 10px;
-    border-radius: 999px;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.1em;
+    min-width: 34px;
+    min-height: 34px;
+    padding: 0 11px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.codexbar-provider-chip-label {
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+    color: rgba(255, 255, 255, 0.94);
 }
 
 .codexbar-provider-chip-theme-codex {
-    background-color: rgba(116, 200, 255, 0.12);
-    color: #74c8ff;
+    background-color: rgba(116, 200, 255, 0.14);
+    border-color: rgba(116, 200, 255, 0.24);
 }
 
 .codexbar-provider-chip-theme-claude {
-    background-color: rgba(255, 180, 103, 0.12);
-    color: #ffb467;
+    background-color: rgba(255, 180, 103, 0.14);
+    border-color: rgba(255, 180, 103, 0.24);
 }
 
 .codexbar-provider-chip-theme-error {
-    background-color: rgba(255, 117, 117, 0.16);
-    color: #ff9393;
+    background-color: rgba(255, 117, 117, 0.14);
+    border-color: rgba(255, 117, 117, 0.24);
 }
 
 .codexbar-provider-name {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 800;
     color: rgba(255, 255, 255, 0.96);
 }
 
 .codexbar-card-identity {
-    color: rgba(255, 255, 255, 0.82);
+    color: rgba(255, 255, 255, 0.84);
     font-size: 13px;
     font-weight: 600;
 }
 
 .codexbar-card-subtitle {
-    color: rgba(255, 255, 255, 0.52);
+    color: rgba(255, 255, 255, 0.54);
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .codexbar-card-hero {
-    font-size: 26px;
+    font-size: 30px;
     font-weight: 900;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.04em;
+    padding-top: 2px;
 }
 
 .codexbar-hero-theme-codex {
-    color: #74c8ff;
+    color: #8ed4ff;
 }
 
 .codexbar-hero-theme-claude {
-    color: #ffb467;
+    color: #ffc185;
 }
 
 .codexbar-hero-theme-error {
-    color: #ff9393;
+    color: #ff9c9c;
 }
 
-/* ── Dividers ──────────────────────────────────────────────────── */
+/* ── Surfaces & dividers ──────────────────────────────────────── */
 
 .codexbar-divider {
     height: 1px;
-    background-color: rgba(255, 255, 255, 0.07);
+    background-color: rgba(255, 255, 255, 0.06);
 }
 
 .codexbar-inline-divider {
-    margin-top: 4px;
-    margin-bottom: 4px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+.codexbar-section {
+    spacing: 8px;
+}
+
+.codexbar-section-title {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.40);
+}
+
+.codexbar-section-surface {
+    spacing: 6px;
+    padding: 6px;
+    border-radius: 18px;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.045);
 }
 
 /* ── Usage section ─────────────────────────────────────────────── */
 
-.codexbar-section {
-    spacing: 12px;
-}
-
-.codexbar-section-title {
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.42);
-    padding-bottom: 2px;
-}
-
 .codexbar-metric-row {
-    spacing: 6px;
-    padding: 6px 10px;
-    border-radius: 12px;
-    background-color: rgba(255, 255, 255, 0.03);
+    spacing: 8px;
+    padding: 9px 10px 10px 10px;
+    border-radius: 14px;
+    background-color: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.codexbar-metric-row-theme-codex {
+    background-color: rgba(116, 200, 255, 0.05);
+    border-color: rgba(116, 200, 255, 0.10);
+}
+
+.codexbar-metric-row-theme-claude {
+    background-color: rgba(255, 180, 103, 0.05);
+    border-color: rgba(255, 180, 103, 0.10);
+}
+
+.codexbar-metric-row-theme-error {
+    background-color: rgba(255, 117, 117, 0.06);
+    border-color: rgba(255, 117, 117, 0.10);
 }
 
 .codexbar-metric-top {
@@ -174,30 +206,30 @@
 .codexbar-metric-percent {
     font-size: 13px;
     font-weight: 800;
-    color: rgba(255, 255, 255, 0.96);
+    color: rgba(255, 255, 255, 0.97);
 }
 
 .codexbar-metric-detail {
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.48);
     font-weight: 500;
+    color: rgba(255, 255, 255, 0.48);
 }
 
 /* ── Progress bars ─────────────────────────────────────────────── */
 
 .codexbar-progress-track {
-    height: 10px;
-    min-width: 244px;
+    min-width: 248px;
+    height: 8px;
     border-radius: 999px;
-    background-color: rgba(255, 255, 255, 0.08);
+    background-color: rgba(255, 255, 255, 0.07);
 }
 
 .codexbar-progress-track-thin {
-    height: 7px;
+    height: 5px;
 }
 
 .codexbar-progress-track-ok {
-    background-color: rgba(255, 255, 255, 0.08);
+    background-color: rgba(255, 255, 255, 0.07);
 }
 
 .codexbar-progress-track-error {
@@ -209,78 +241,82 @@
 }
 
 .codexbar-progress-fill-codex {
-    background-color: #74c8ff;
+    background-color: #78cbff;
 }
 
 .codexbar-progress-fill-claude {
-    background-color: #ffb467;
+    background-color: #ffbc78;
 }
 
 .codexbar-progress-fill-error {
-    background-color: #ff9393;
+    background-color: #ff9c9c;
 }
 
 /* ── Credits section ───────────────────────────────────────────── */
 
 .codexbar-credits-section {
-    spacing: 6px;
+    spacing: 0;
+}
+
+.codexbar-credits-surface {
+    spacing: 2px;
 }
 
 .codexbar-credits-header {
     spacing: 8px;
-    padding: 8px 10px;
-    border-radius: 12px;
-    background-color: rgba(255, 255, 255, 0.03);
+    padding: 8px 10px 0 10px;
 }
 
 .codexbar-credits-value {
-    font-size: 15px;
+    font-size: 18px;
     font-weight: 800;
 }
 
 .codexbar-credits-theme-codex {
-    color: #74c8ff;
+    color: #8ed4ff;
 }
 
 .codexbar-credits-theme-claude {
-    color: #ffb467;
+    color: #ffc185;
 }
 
 .codexbar-credits-theme-error {
-    color: #ff9393;
+    color: #ff9c9c;
 }
 
 .codexbar-credits-hint {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.46);
+    font-size: 10px;
     font-weight: 500;
-    padding-left: 10px;
+    color: rgba(255, 255, 255, 0.48);
+    padding: 0 10px 8px 10px;
 }
 
 /* ── Facts section ─────────────────────────────────────────────── */
 
-.codexbar-facts-section {
-    spacing: 2px;
+.codexbar-facts-surface {
+    spacing: 4px;
 }
 
 .codexbar-fact-row {
-    spacing: 10px;
-    padding: 5px 10px;
-    border-radius: 8px;
+    spacing: 12px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .codexbar-fact-label {
-    font-size: 11px;
+    font-size: 10px;
+    font-weight: 700;
     color: rgba(255, 255, 255, 0.42);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 600;
+    letter-spacing: 0.10em;
 }
 
 .codexbar-fact-value {
     font-size: 12px;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.84);
+    color: rgba(255, 255, 255, 0.86);
 }
 
 .codexbar-status-none {
@@ -310,51 +346,67 @@
 /* ── Error banner ──────────────────────────────────────────────── */
 
 .codexbar-error-banner {
-    spacing: 4px;
-    padding: 10px 14px;
-    border-radius: 14px;
-    background-color: rgba(255, 90, 90, 0.10);
-    border: 1px solid rgba(255, 90, 90, 0.18);
+    spacing: 6px;
+    padding: 10px 12px;
+    border-radius: 16px;
+    background-color: rgba(255, 90, 90, 0.09);
+    border: 1px solid rgba(255, 117, 117, 0.18);
 }
 
 .codexbar-error-title {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 800;
     color: #ff9a9a;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.10em;
 }
 
 .codexbar-error-body {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.82);
     font-weight: 500;
+    color: rgba(255, 255, 255, 0.82);
 }
 
 /* ── Action buttons ────────────────────────────────────────────── */
 
-.codexbar-actions-item {
-    padding-top: 2px;
-    padding-bottom: 2px;
+.codexbar-actions-section {
+    spacing: 10px;
 }
 
-.codexbar-actions-box {
-    min-width: 328px;
-    spacing: 8px;
+.codexbar-actions-divider {
+    margin-top: 0;
+    margin-bottom: 2px;
 }
 
-.codexbar-switcher-row,
+.codexbar-switcher-row {
+    spacing: 6px;
+    padding: 4px;
+    border-radius: 18px;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.045);
+}
+
 .codexbar-tools-row {
     spacing: 8px;
 }
 
 .codexbar-action-button {
-    padding: 9px 14px;
+    padding: 9px 12px;
     border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.06);
     background-color: rgba(255, 255, 255, 0.04);
+    font-size: 12px;
     font-weight: 700;
-    font-size: 13px;
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.codexbar-action-button-switcher {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.codexbar-action-button-utility {
+    background-color: rgba(255, 255, 255, 0.035);
 }
 
 .codexbar-action-button:hover {
@@ -363,10 +415,29 @@
 }
 
 .codexbar-action-button-active {
-    background-color: rgba(255, 255, 255, 0.14);
-    border-color: rgba(255, 255, 255, 0.22);
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.18);
+    color: rgba(255, 255, 255, 0.98);
+}
+
+.codexbar-action-button-active-codex {
+    background-color: rgba(116, 200, 255, 0.16);
+    border-color: rgba(116, 200, 255, 0.28);
+}
+
+.codexbar-action-button-active-claude {
+    background-color: rgba(255, 180, 103, 0.16);
+    border-color: rgba(255, 180, 103, 0.28);
 }
 
 .codexbar-action-button-active:hover {
-    background-color: rgba(255, 255, 255, 0.16);
+    background-color: rgba(255, 255, 255, 0.14);
+}
+
+.codexbar-action-button-active-codex:hover {
+    background-color: rgba(116, 200, 255, 0.20);
+}
+
+.codexbar-action-button-active-claude:hover {
+    background-color: rgba(255, 180, 103, 0.20);
 }
